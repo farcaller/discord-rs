@@ -835,6 +835,12 @@ impl Discord {
 		Invite::decode(try!(serde_json::from_reader(response)))
 	}
 
+	/// Retrieve members for a server.
+	pub fn get_members(&self, server: ServerId) -> Result<Vec<Member>> {
+		let response = request!(self, get, "/guilds/{}/members?limit=1000", server);
+		decode_array(try!(serde_json::from_reader(response)), Member::decode)
+	}
+
 	/// Retrieve a member object for a server given the member's user id.
 	pub fn get_member(&self, server: ServerId, user: UserId) -> Result<Member> {
 		let response = request!(self, get, "/guilds/{}/members/{}", server, user);
@@ -862,8 +868,8 @@ impl Discord {
 
 	/// Retrieve the list of roles for a server.
 	pub fn get_roles(&self, server: ServerId) -> Result<Vec<Role>> {
-			let response = request!(self, get, "/guilds/{}/roles", server);
-			decode_array(try!(serde_json::from_reader(response)), Role::decode)
+		let response = request!(self, get, "/guilds/{}/roles", server);
+		decode_array(try!(serde_json::from_reader(response)), Role::decode)
 	}
 
 	/// Create a new role on a server.
